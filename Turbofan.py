@@ -1,4 +1,4 @@
-import math
+import numpy as np
 import Constants
 import adafruit_mcp3xxx.mcp3008 as MCP
 
@@ -19,7 +19,7 @@ class TurboFan:
         self.fuel = fuel
 
     # Turbofan
-    def engine_turbofan(self, outputs):
+    def engine_turbofan(self, output):
         # Output String
         out = ""
         # Initial Conditions
@@ -111,21 +111,21 @@ class TurboFan:
             P_9 = P_02 / P_c_ratio
             T_09 = T_02
             T_9 = T_09 / (1 + (g_g - 1) / 2)
-            C_9 = 1 * math.sqrt(g_a * 287 * T_9)
+            C_9 = 1 * np.sqrt(g_a * 287 * T_9)
             Nozzle_cold = 1
-            print('The Cold Nozzle is choked')
-            print(' ')
+            #print('The Cold Nozzle is choked')
+            #print(' ')
             out += 'The Cold Nozzle is choked\n'
 
         else:  # Nozzle Not Choked
-            P_2 = P_a
+            P_9 = P_a
             T_09 = T_02
             dt_9 = n_nozzle * T_09 * (1 - (P_9 / P_02)) ** ((g_g - 1) / g_g)
             T_9 = T_09 - dt_9
-            C_9 = math.sqrt(2 * Cp_g * 1000 * dt_9)
+            C_9 = np.sqrt(2 * Cp_g * 1000 * dt_9)
             Nozzle_cold = 0
-            print('The Cold Nozzle is not choked')
-            print(' ')
+            #print('The Cold Nozzle is not choked')
+            #print(' ')
             out += 'The Cold Nozzle is not choked\n'
 
         # Hot Nozzle
@@ -137,10 +137,10 @@ class TurboFan:
             P_8 = P_07 / P_c_ratio
             T_08 = T_07
             T_8 = T_08 / (1 + (g_g - 1) / 2)
-            C_8 = 1 * math.sqrt(g_a * 287 * T_8)
+            C_8 = 1 * np.sqrt(g_a * 287 * T_8)
             Nozzle_hot = 1
-            print('The Hot Nozzle is choked')
-            print(' ')
+            #print('The Hot Nozzle is choked')
+            #print(' ')
             out += 'The Hot Nozzle is choked\n'
 
         else:  # Nozzle Not Choked
@@ -148,11 +148,11 @@ class TurboFan:
             T_08 = T_07
             dt_8 = n_nozzle * T_08 * (1 - (P_8 / P_07)) ** ((g_g - 1) / g_g)
             T_8 = T_08 - dt_8
-            C_8 = math.sqrt(2 * Cp_g * 1000 * dt_8)
+            C_8 = np.sqrt(2 * Cp_g * 1000 * dt_8)
             Nozzle_hot = 0
-            print('The Hot Nozzle is not choked')
-            print(' ')
-            out += 'The Hot Nozzle not is choked\n'
+            #print('The Hot Nozzle is not choked')
+            #print(' ')
+            out += 'The Hot Nozzle is not choked\n'
 
         # Thrust Hot Nozzle
         if (Nozzle_hot == 1):
@@ -175,33 +175,35 @@ class TurboFan:
         # SFC
         F_total = F_hot + F_cold
         SFC = m_f / F_total
-        print('The total thrust is ' + str(F_total))
-        print(' ')
+        #print('The total thrust is ' + str(F_total))
+        #print(' ')
         out += f'The total thrust is {F_total}\n'
 
-        print('The SFC is ' + str(SFC))
-        print(' ')
+        #print('The SFC is ' + str(SFC))
+        #print(' ')
         out += f'The SFC is {SFC}\n'
 
         # Propulsive Efficiency
         n_p = (F_total * C_a) / \
               (0.5 * ((m_c * C_9 ** 2 + m_hg * C_8 ** 2) - (m_a * C_a ** 2)))
-        print('The Propulsive Efficiency is ' + str(n_p))
-        print(' ')
+        #print('The Propulsive Efficiency is ' + str(n_p))
+        #print(' ')
         out += f'The Propulsive Efficiency is {n_p}\n'
 
         # Efficieny of the Cycle
         n_e = (0.5 * (m_c * C_9 ** 2 + m_hg * C_8 ** 2) - (m_a * C_a ** 2)) / (m_f * LHV)
-        print('The Efficieny of the Cycle is ' + str(n_e))
-        print(' ')
+        #print('The Efficieny of the Cycle is ' + str(n_e))
+        #print(' ')
         out += f'The Efficiency of the Cycle is {n_e}\n'
 
         # Overall Efficiency
         n_0 = (F_total * C_a) / (m_f * LHV)
-        print('The Overall Efficiency ' + str(n_0))
-        print(' ')
-        out += 'The Overall Efficiency {n_0}\n'
-        outputs.update({'turbofan': out})
+        #print('The Overall Efficiency ' + str(n_0))
+        #print(' ')
+        out += f'The Overall Efficiency {n_0}\n'
+#         print(f"FAN: {out}")
+
+        output.update({'out':out})
 
     def get_conditions(self):
         return self.conditions['pressure'], self.conditions['speed'], self.conditions['temperature']

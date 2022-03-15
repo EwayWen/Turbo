@@ -1,4 +1,4 @@
-import math
+import numpy as np
 import Constants
 
 
@@ -15,7 +15,7 @@ class Turboprop:
         self.fuel = fuel
 
     # Going throughout the engine
-    def engine_turboprop(self, outputs):
+    def engine_turboprop(self, output, conditions):
         # Output String
         out = ""
         # Initial Conditions
@@ -23,7 +23,7 @@ class Turboprop:
         T_a = self.conditions['temperature']
         C_a = self.conditions['speed']
         P_a = self.conditions['pressure']
-        outputs.update({"conditions": self.conditions})
+        conditions.update(self.conditions)
         # Constants
         Cp_a = 1.005  # kJ/kg
         g_a = 1.4
@@ -88,7 +88,7 @@ class Turboprop:
         T_05 = T_04 - dt4
         W_power_turbine = Cp_g * dt4
         W_power_turbine_dot = m_g * Cp_g * dt4
-        C_6 = math.sqrt(1000 * Cp_g * dt4)
+        C_6 = np.sqrt(1000 * Cp_g * dt4)
 
         # Power Produced
         W_net = n_mech * W_power_turbine
@@ -100,39 +100,40 @@ class Turboprop:
         F_prop = W_prop_dot / C_a
         F_jet = m_g * C_6 - m_a * C_a
         F_total = F_prop + F_jet
-        print('The total thrust is ' + str(F_total))
-        print(' ')
+        #print('The total thrust is ' + str(F_total))
+        #print(' ')
         out += f'The total thrust is {F_total}\n'
 
         # Different Powers
         tp = W_prop_dot + F_jet / C_a
         ep = tp / n_propeller
-        print('The Equivalent Power is ' + str(ep))
-        print(' ')
+        #print('The Equivalent Power is ' + str(ep))
+        #print(' ')
         out += f'The Equivalent Power is {ep}\n'
         # SFC
         SFC = (f * 3600) / ep
-        print('The SFC is ' + str(SFC))
-        print(' ')
+        #print('The SFC is ' + str(SFC))
+        #print(' ')
         out += f'The SFC is {SFC}\n'
         # Propulsive Efficiency
         n_p = (F_total * C_a) / (0.5 * ((m_g * C_6 ** 2) - (m_a * C_a ** 2)))
-        print('The Propulsive Efficiency is ' + str(n_p))
-        print(' ')
+        #print('The Propulsive Efficiency is ' + str(n_p))
+        #print(' ')
         out += f'The Propulsive Efficiency is {n_p}\n'
 
         # Efficieny of the Cycle
         n_e = (0.5 * ((m_g * C_6 ** 2) - (m_a * C_a ** 2))) / (m_f * lhv)
-        print('The Efficieny of the Cycle is ' + str(n_e))
-        print(' ')
+        #print('The Efficieny of the Cycle is ' + str(n_e))
+        #print(' ')
         out += f'The Efficiency of the Cycle is {n_e}\n'
 
         # Overall Efficiency
         n_0 = (F_total * C_a) / (m_f * lhv)
-        print('The Overall Efficiency ' + str(n_0))
-        print(' ')
-        out += 'The Overall Efficiency {n_0}\n'
-        outputs.update({'turboprop': out})
+        #print('The Overall Efficiency ' + str(n_0))
+        #print(' ')
+        out += f'The Overall Efficiency {n_0}\n'
+#         print(f"PROP: {out}")
+        output.update({'out':out})
 
     def get_conditions(self):
         return self.conditions['pressure'], self.conditions['speed'], self.conditions['temperature']

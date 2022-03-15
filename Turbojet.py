@@ -1,4 +1,4 @@
-import math
+import numpy as np
 import Constants
 
 
@@ -13,7 +13,7 @@ class Turbojet:
         self.fuel = fuel
 
     # Going throughout the engine
-    def engine_turbojet(self, outputs):
+    def engine_turbojet(self, output):
         # Output String
         out = ""
         # Initial Conditions
@@ -83,20 +83,20 @@ class Turbojet:
             P_6 = P_05 / P_c_ratio
             T_06 = T_05
             T_6 = T_06 / (1 + (g_g - 1) / 2)
-            C_6 = 1 * math.sqrt(g_a * 287 * T_6)
+            C_6 = 1 * np.sqrt(g_a * 287 * T_6)
             Nozzle = 1
-            print('The Nozzle is choked')
-            print(' ')
+            #print('The Nozzle is choked')
+            #print(' ')
             out += 'The Nozzle is choked\n'
         else:  # Nozzle Not Choked
             P_6 = P_a
             T_06 = T_05
             dt_4 = n_nozzle * T_05 * (1 - (P_6 / P_05)) ** ((g_g - 1) / g_g)
             T_6 = T_06 - dt_4
-            C_6 = math.sqrt(2 * Cp_g * 1000 * dt_4)
+            C_6 = np.sqrt(2 * Cp_g * 1000 * dt_4)
             Nozzle = 0
-            print('The Nozzle is not choked')
-            print(' ')
+            #print('The Nozzle is not choked')
+            #print(' ')
             out += 'The Nozzle is not choked\n'
 
         # Propulsion
@@ -109,31 +109,31 @@ class Turbojet:
             Thrust = m_g * C_6 - m_a * C_a
             Thrust_specific = Thrust / m_a
 
-        print('The total thrust is ' + str(Thrust))
-        print(' ')
+        #print('The total thrust is ' + str(Thrust))
+        #print(' ')
         out += f'The total thrust is {Thrust}\n'
         # SFC
         SFC = m_f / Thrust
-        print('The SFC is ' + str(SFC))
-        print(' ')
+        #print('The SFC is ' + str(SFC))
+        #print(' ')
         out += f'The SFC is {SFC}\n'
         # Propulsive Efficiency
         n_p = (Thrust * C_a) / (0.5 * ((m_g * C_6 ** 2) - (m_a * C_a ** 2)))
-        print('The Propulsive Efficiency is ' + str(n_p))
-        print(' ')
+        #print('The Propulsive Efficiency is ' + str(n_p))
+        #print(' ')
         out += f'The Propulsive Efficiency is {n_p}\n'
         # Efficieny of the Cycle
         n_e = (0.5 * ((m_g * C_6 ** 2) - (m_a * C_a ** 2))) / (m_f * lhv)
-        print('The Efficieny of the Cycle is ' + str(n_e))
-        print(' ')
+        #print('The Efficieny of the Cycle is ' + str(n_e))
+        #print(' ')
         out += f'The Efficiency of the Cycle is {n_e}\n'
         # Overall Efficiency
         n_0 = (Thrust * C_a) / (m_f * lhv)
-        print('The Overall Efficiency ' + str(n_0))
-        print(' ')
-        out += 'The Overall Efficiency {n_0}\n'
-
-        outputs.update({'turbojet': out})
+        #print('The Overall Efficiency ' + str(n_0))
+        #print(' ')
+        out += f'The Overall Efficiency {n_0}\n'
+#         print(f"JET: {out}")
+        output.update({'out':out})
 
     def get_conditions(self):
         return self.conditions['pressure'], self.conditions['speed'], self.conditions['temperature']
