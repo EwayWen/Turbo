@@ -43,11 +43,10 @@ class PeripheralHelper:
             GPIO.output(5, GPIO.HIGH)
             GPIO.setup(6, GPIO.OUT)
             GPIO.output(6, GPIO.LOW)
-#           self.pin_high_b 
-#           self.pin_low_a 
+        #           self.pin_high_b
+        #           self.pin_low_a
         except Exception as e:
             print(f"PWM Exception occurred, closing: {e}")
-
 
     def get_height(self):
         raw_height = self.channel_height.value
@@ -76,10 +75,15 @@ class PeripheralHelper:
         return normalized
 
     def new_normalize(self, input, range):
-        return (range+1)**(input/64500)-1
+        output = ((range + 1) ** (input / 64500)) - 1
+        if output > range:
+            output = range
+        if output < 0:
+            output = 0
+        return output
 
     def write_PWM(self, pwm_in):
-        pwm_out = pwm_in/0.26 * 30
+        pwm_out = pwm_in / 0.26 * 30
         print(f"pwm write: {pwm_out}")
         self.not_prop.ChangeDutyCycle(pwm_out)
         self.prop.ChangeDutyCycle(pwm_out)
