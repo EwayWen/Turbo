@@ -97,7 +97,6 @@ class GUI:
         Controller.fan_bool = True
         self.mode_label['text'] = "Mode: Turbofan"
 
-
     def clear_button_press(self, event):
         print("exit")
         Controller.jet_bool = False
@@ -121,7 +120,6 @@ class GUI:
         while self.thread_bool:
             conditions = self.conditions
             if conditions is not None:
-                
                 self.height_label['text'] = f"Height: {conditions.get('height', None)}"
                 self.speed_label['text'] = f"Speed: {conditions.get('speed', None)}"
                 self.temperature_label['text'] = f"Temperature: {conditions.get('temperature', None)}"

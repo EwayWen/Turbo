@@ -30,32 +30,23 @@ class Controller:
 
     def start_threads(self):
         if self.jet_thread is None:
-#             self.jet_thread = threading.Thread(target=self.dummy_thread, args=("jet",))
             self.jet_thread = threading.Thread(target=self.start_jet, args=(self.jet_output,))
             self.jet_thread_bool = True
             self.jet_thread.start()
         else:
             print("Jet thread already running")
         if self.fan_thread is None:
-#             self.fan_thread = threading.Thread(target=self.dummy_thread, args=("fan",))
             self.fan_thread = threading.Thread(target=self.start_fan, args=(self.fan_output,))
             self.fan_thread_bool = True
             self.fan_thread.start()
         else:
             print("Fan thread already running")
         if self.prop_thread is None:
-#             self.prop_thread = threading.Thread(target=self.dummy_thread, args=("prop",))
             self.prop_thread = threading.Thread(target=self.start_prop, args=(self.prop_output, self.conditions))
             self.prop_thread_bool = True
             self.prop_thread.start()
         else:
             print("Prop thread already running")
-
-    def dummy_thread(self, val):
-        while True:
-            print(val)
-            time.sleep(1)
-# TODO: Uncomment the below
 
     def start_fan(self, outputs):
         # Run Turbofan
@@ -65,14 +56,8 @@ class Controller:
             flight_level = self.p_helper.get_height()
             fuel_level = self.p_helper.get_fuel()
             print(f"The altitude is {str(flight_level * 500)} meters and the fuel flow is {str(fuel_level)} kg/s\n")
-            # Find other IC's
+            # Init Turbo
             turbo_fan = TurboFan(flight_level, fuel_level)
-            # P_a, C_a, T_a = turbo_fan.get_conditions()
-            # print(f"The IC for Temperature is {T_a}")
-            # print(f"The IC for Speed is {C_a}")
-            # print(f"The IC for Pressure is {P_a}\n")
-            # Go throughout the engine to determine all other parameters
-            
             turbo_fan.engine_turbofan(outputs)
             if not Controller.jet_bool and Controller.fan_bool:
                 self.p_helper.write_PWM(fuel_level)
@@ -88,13 +73,8 @@ class Controller:
             flight_level = self.p_helper.get_height()
             fuel_level = self.p_helper.get_fuel()
             print(f"The altitude is {str(flight_level * 500)} meters and the fuel flow is {str(fuel_level)} kg/s\n")
-            # Find other IC's
+            # Init Turbo
             turbo_prop = Turboprop(flight_level, fuel_level)
-            # P_a, C_a, T_a = turbo_prop.get_conditions()
-            # print(f"The IC for Temperature is {T_a}")
-            # print(f"The IC for Speed is {C_a}")
-            # print(f"The IC for Pressure is {P_a}\n")
-            # Go throughout the engine to determine all other parameters
             conditions.update({'fuel': fuel_level})
             turbo_prop.engine_turboprop(outputs, conditions)
             time.sleep(1)
@@ -107,13 +87,8 @@ class Controller:
             flight_level = self.p_helper.get_height()
             fuel_level = self.p_helper.get_fuel()
             print(f"The altitude is {str(flight_level * 500)} meters and the fuel flow is {str(fuel_level)} kg/s\n")
-            # Find other IC's
+            # Init Turbo
             turbo_jet = Turbojet(flight_level, fuel_level)
-            # P_a, C_a, T_a = turbo_jet.get_conditions()
-            # print(f"The IC for Temperature is {T_a}")
-            # print(f"The IC for Speed is {C_a}")
-            # print(f"The IC for Pressure is {P_a}\n")
-            # Go throughout the engine to determine all other parameters
             turbo_jet.engine_turbojet(outputs)
             if Controller.jet_bool and not Controller.fan_bool:
                 self.p_helper.write_PWM(fuel_level)

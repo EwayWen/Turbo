@@ -28,6 +28,7 @@ class PeripheralHelper:
         except Exception as e:
             print(f"MCP Exception occurred, closing: {e}")
         try:
+            # Set up fan/jet output
             GPIO.setup(12, GPIO.OUT)
             self.not_prop = GPIO.PWM(12, 50)
             self.not_prop.start(0.0)
@@ -35,7 +36,7 @@ class PeripheralHelper:
             GPIO.output(20, GPIO.HIGH)
             GPIO.setup(26, GPIO.OUT)
             GPIO.output(26, GPIO.LOW)
-            # TODO: fill in prop pins
+            # Set up prop output
             GPIO.setup(13, GPIO.OUT)
             self.prop = GPIO.PWM(13, 50)
             self.prop.start(0.0)
@@ -43,8 +44,6 @@ class PeripheralHelper:
             GPIO.output(5, GPIO.HIGH)
             GPIO.setup(6, GPIO.OUT)
             GPIO.output(6, GPIO.LOW)
-        #           self.pin_high_b
-        #           self.pin_low_a
         except Exception as e:
             print(f"PWM Exception occurred, closing: {e}")
 
